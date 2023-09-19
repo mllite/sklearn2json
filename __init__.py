@@ -5,10 +5,10 @@ from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import RidgeClassifier
 from sklearn.svm import SVC
 
-import converters.decison_tree_converter as tree_cvt
-import converters.ridge_converter as ridge_cvt
-import converters.svm_converter as svm_cvt
-import converters.mlp_converter as mlp_cvt
+import sklearn2json.converters.decison_tree_converter as tree_cvt
+import sklearn2json.converters.ridge_converter as ridge_cvt
+import sklearn2json.converters.svm_converter as svm_cvt
+import sklearn2json.converters.mlp_converter as mlp_cvt
 
 def convert_model(clf):
     print("CONVERT_MODEL ", clf.__class__)    

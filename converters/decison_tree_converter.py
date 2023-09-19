@@ -2,6 +2,7 @@
 from . import generic_converter as conv
 import sklearn
 from sklearn.tree import DecisionTreeClassifier
+import numpy as np
 
 class decision_tree_converter(conv.json_converter):
     def __init__(self):
@@ -27,11 +28,12 @@ class decision_tree_converter(conv.json_converter):
         node_count = len(tree.n_node_samples)
         lDict["node_count"] = node_count
         nodes = {}
-        P = int(log(node_count) / log(10) + 1)
-        assert(0)
+        P = int(np.log(node_count) / np.log(10) + 1)
         for node_id in range(len(tree.n_node_samples)):
             node_id_str = ('0'*P + str(node_id))[-P:]
-            print("NODE_ID_STR ", P, node_id, node_id_str)
+            # print("NODE_ID_STR ", P, node_id, node_id_str)
+            normalized_value = tree.value[node_id][0]
+            normalized_value = normalized_value / np.sum(normalized_value)
             nodes["node_" + node_id_str ] = {
                 "left" : tree.children_left[node_id],
                 "right" : tree.children_right[node_id],
@@ -40,7 +42,7 @@ class decision_tree_converter(conv.json_converter):
                 "impurity" : tree.impurity[node_id],
                 "n_samples" : tree.n_node_samples[node_id],
                 "w_samples" : tree.weighted_n_node_samples[node_id],
-                "value" : list(tree.value[node_id][0])
+                "value" : list(normalized_value)
             }
         lDict["nodes"] = nodes
         return lDict

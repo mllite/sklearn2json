@@ -1,0 +1,9 @@
+.ipynb_checkpoints
+__pycache__
+*~
+log.*
+logs/*
+outputs/*
+old/*
+bin/*
+build

@@ -34,6 +34,7 @@ class ridge_converter(conv.json_converter):
     def convert_classifier(self, clf):
         lDict = {}
         lDict1 = clf.__dict__
+        lDict["metadata"] = self.get_metadata(clf)
         lDict["options"] = self.get_model_options_as_dict(clf)
         lDict["classes"] = list(clf._label_binarizer.classes_)
         lDict["equations"] = self.get_equations_as_dict(clf)
@@ -42,6 +43,7 @@ class ridge_converter(conv.json_converter):
     def convert_regressor(self, clf):
         lDict = {}
         lDict1 = clf.__dict__
+        lDict["metadata"] = self.get_metadata(clf)
         lDict["options"] = self.get_model_options_as_dict(clf)
         lDict["equations"] = self.get_equations_as_dict(clf)
         return lDict

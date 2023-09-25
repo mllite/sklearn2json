@@ -19,12 +19,11 @@ class mlp_converter(conv.json_converter):
         return lDict
 
     def get_mlp_as_dict(self, clf):
-        lDict = {}
         lDict1 = clf.__dict__
         NL = len(lDict1['coefs_'])
         lSizes = [lDict1['coefs_'][0].shape[0]] + [lDict1['coefs_'][layer].shape[1] for layer in range(NL)]
-        lDict["sizes"] = lSizes
         lLayers = {}
+        lLayers["sizes"] = lSizes
         lLayers["Layer_0"] = { "name" : "Input_Layer", "NbInputs" : 0, "NbOutputs" : lSizes[0], "intercepts" : [ ] }
         for layer in range(1, NL + 1):
             layer_info = {}
@@ -38,22 +37,23 @@ class mlp_converter(conv.json_converter):
                 layer_info["coeffs_" + str(idx)] = list(lCoefs[idx])
             layer_info["intercepts"] = list(lDict1['intercepts_'][layer - 1])
             lLayers["Layer_" + str(layer)] = layer_info
-        lDict["layers"] = lLayers
-        return lDict
+        return lLayers
         
     def convert_classifier(self, clf):
         lDict = {}
         lDict1 = clf.__dict__
+        lDict["metadata"] = self.get_metadata(clf)
         lDict["options"] = self.get_model_options_as_dict(clf)
         lDict["classes"] = list(clf.classes_)
-        lDict["mlp_model"] = self.get_mlp_as_dict(clf)
+        lDict["layers"] = self.get_mlp_as_dict(clf)
         return lDict
 
     def convert_regressor(self, clf):
         lDict = {}
         lDict1 = clf.__dict__
+        lDict["metadata"] = self.get_metadata(clf)
         lDict["options"] = self.get_model_options_as_dict(clf)
-        lDict["mlp_model"] = self.get_mlp_as_dict(clf)
+        lDict["layers"] = self.get_mlp_as_dict(clf)
         return lDict
 
     def convert_model(self, clf):

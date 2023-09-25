@@ -50,6 +50,7 @@ class decision_tree_converter(conv.json_converter):
     def convert_classifier(self, clf):
         lDict = {}
         lDict1 = clf.__dict__
+        lDict["metadata"] = self.get_metadata(clf)
         lDict["options"] = self.get_model_options_as_dict(clf)
         lDict["classes"] = list(lDict1["classes_"])
         lDict["tree"] = self.get_tree_as_dict(clf)
@@ -58,6 +59,7 @@ class decision_tree_converter(conv.json_converter):
     def convert_regressor(self, clf):
         lDict = {}
         lDict1 = clf.__dict__
+        lDict["metadata"] = self.get_metadata(clf)
         lDict["options"] = self.get_model_options_as_dict(clf)
         lDict["tree"] = self.get_tree_as_dict(clf)
         return lDict

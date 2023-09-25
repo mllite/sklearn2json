@@ -24,7 +24,7 @@ class decision_tree_converter(conv.json_converter):
         lDict1 = clf.__dict__
         lDict["features"] = lDict1['n_features_in_']
         lDict["outputs"] = lDict1['n_outputs_']
-        lDict["max_depth"] = lDict1['max_depth']
+        lDict["max_depth"] = tree.max_depth
         node_count = len(tree.n_node_samples)
         lDict["node_count"] = node_count
         nodes = {}
@@ -33,7 +33,8 @@ class decision_tree_converter(conv.json_converter):
             node_id_str = ('0'*P + str(node_id))[-P:]
             # print("NODE_ID_STR ", P, node_id, node_id_str)
             normalized_value = tree.value[node_id][0]
-            normalized_value = normalized_value / np.sum(normalized_value)
+            if(normalized_value.shape[0] > 1):
+                normalized_value = normalized_value / np.sum(normalized_value)
             nodes["node_" + node_id_str ] = {
                 "left" : tree.children_left[node_id],
                 "right" : tree.children_right[node_id],

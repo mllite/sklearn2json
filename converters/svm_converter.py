@@ -2,7 +2,8 @@
 from . import generic_converter as conv
 import sklearn
 from sklearn.svm import SVC
-
+import numpy as np
+           
 class svm_converter(conv.json_converter):
     def __init__(self):
         conv.json_converter.__init__(self);
@@ -21,13 +22,17 @@ class svm_converter(conv.json_converter):
         L = clf.support_vectors_.shape[0]
         lDict["L"] = L
         lSVs = {}
+        P = int(np.log(L) / np.log(10) + 1)
         for sv_idx in range(L):
-            lSVs["SV_" + str(sv_idx)] = list(clf.support_vectors_[sv_idx])
+            sv_str = ('0'*P + str(sv_idx))[-P:]
+            lSVs["SV_" + sv_str] = list(clf.support_vectors_[sv_idx])
         lDict["SupportVectors"] = lSVs
         lCoefs = {}
         print(clf.dual_coef_.shape)
+        P = int(np.log(clf.dual_coef_.shape[0]) / np.log(10) + 1)
         for idx in range(clf.dual_coef_.shape[0]):
-            lCoefs["SV_coef_" + str(idx)] = list(clf.dual_coef_[idx])
+            coef_str = ('0'*P + str(idx))[-P:]
+            lCoefs["SV_coef_" + coef_str] = list(clf.dual_coef_[idx])
         lDict["SupportVectorsCoefs"] = lCoefs
         lDict["rho"] = list(-clf.intercept_)
         lDict["nSV"] = list(clf._n_support)

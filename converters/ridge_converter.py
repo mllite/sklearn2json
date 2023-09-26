@@ -2,6 +2,7 @@
 from . import generic_converter as conv
 import sklearn
 from sklearn.linear_model import RidgeClassifier
+import numpy as np
 
 class ridge_converter(conv.json_converter):
     def __init__(self):
@@ -23,12 +24,14 @@ class ridge_converter(conv.json_converter):
             equations["coeffs"] = list(clf.coef_)
             equations["intercept"] = clf.intercept_
         else:
+            P = int(np.log(clf.coef_.shape[0]) / np.log(10) + 1)
             for class_idx in range(clf.coef_.shape[0]):
                 info = {
                     "coef" : list(clf.coef_[class_idx]),
                     "intercept" : clf.intercept_[class_idx]
                 }
-                equations["class_" + str(class_idx)] = info
+                idx_str = ('0'*P + str(class_idx))[-P:]
+                equations["class_" + idx_str] = info
         return equations
         
     def convert_classifier(self, clf):

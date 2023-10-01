@@ -20,6 +20,8 @@ class svm_converter(conv.json_converter):
         lDict = {}
         lDict1 = clf.__dict__
         L = clf.support_vectors_.shape[0]
+        if(hasattr(clf, "classes")):
+            lDict["classes"] = len(clf.classes_)
         lDict["L"] = L
         lSVs = {}
         P = int(np.log(L) / np.log(10) + 1)
@@ -47,7 +49,6 @@ class svm_converter(conv.json_converter):
         lDict1 = clf.__dict__
         lDict["metadata"] = self.get_metadata(clf)
         lDict["options"] = self.get_model_options_as_dict(clf)
-        lDict["classes"] = list(clf.classes_)
         lDict["svm_model"] = self.get_svm_as_dict(clf)
         return lDict
 

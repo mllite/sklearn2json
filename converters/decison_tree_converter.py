@@ -35,11 +35,16 @@ class decision_tree_converter(conv.json_converter):
             normalized_value = tree.value[node_id][0]
             if(normalized_value.shape[0] > 1):
                 normalized_value = normalized_value / np.sum(normalized_value)
+            feature = tree.feature[node_id]
+            (left, right, threshold) = (tree.children_left[node_id], tree.children_right[node_id], tree.threshold[node_id])
+            if(feature == -2):
+                feature = None
+                (left, right, threshold) = (None, None, None)
             nodes["node_" + node_id_str ] = {
-                "left" : tree.children_left[node_id],
-                "right" : tree.children_right[node_id],
-                "feature" : tree.feature[node_id],
-                "threshold" : tree.threshold[node_id],
+                "left" : left,
+                "right" : right,
+                "feature" : feature,
+                "threshold" : threshold,
                 "impurity" : tree.impurity[node_id],
                 "n_samples" : tree.n_node_samples[node_id],
                 "w_samples" : tree.weighted_n_node_samples[node_id],

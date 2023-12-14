@@ -1,5 +1,6 @@
 
 import sklearn
+import xgboost as xgb
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.neural_network import MLPClassifier
 from sklearn.linear_model import RidgeClassifier
@@ -9,6 +10,7 @@ import sklearn2json.converters.decison_tree_converter as tree_cvt
 import sklearn2json.converters.ridge_converter as ridge_cvt
 import sklearn2json.converters.svm_converter as svm_cvt
 import sklearn2json.converters.mlp_converter as mlp_cvt
+import sklearn2json.converters.xgb_converter as xgb_cvt
 
 def convert_model(clf):
     print("CONVERT_MODEL ", clf.__class__)    
@@ -35,6 +37,12 @@ def convert_model(clf):
         return lConverter.convert_classifier(clf)
     if(clf.__class__ == sklearn.neural_network._multilayer_perceptron.MLPRegressor):
         lConverter = mlp_cvt.mlp_converter()
+        return lConverter.convert_regressor(clf)
+    if(clf.__class__ == xgb.XGBClassifier):
+        lConverter = xgb_cvt.xgb_converter()
+        return lConverter.convert_classifier(clf)
+    if(clf.__class__ == xgb.XGBRegressor):
+        lConverter = xgb_cvt.xgb_converter()
         return lConverter.convert_regressor(clf)
     
     print("WARNING_CANNOT_CONVERT_MODEL ", clf.__class__)    

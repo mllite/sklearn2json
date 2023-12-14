@@ -11,9 +11,11 @@ class svm_converter(conv.json_converter):
     def get_model_options_as_dict(self, clf):
         lDict = {}
         lDict1 = clf.__dict__
+        print(lDict1.keys())
         lOptions = ['kernel', 'degree', 'gamma', 'coef0', 'cache_size', 'epsilon', 'C']
         for opt in lOptions:
             lDict[opt] = lDict1[opt]
+        lDict['gamma'] = lDict1['_gamma']
         return lDict
 
     def get_svm_as_dict(self, clf):

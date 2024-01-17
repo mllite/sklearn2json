@@ -20,10 +20,10 @@ def convert_model(clf):
     if(clf.__class__ == sklearn.tree._classes.DecisionTreeRegressor):
         lConverter = tree_cvt.decision_tree_converter()
         return lConverter.convert_regressor(clf)
-    if(clf.__class__ == sklearn.svm._classes.SVC):
+    if(clf.__class__ in [sklearn.svm._classes.SVC, sklearn.svm._classes.NuSVC]):
         lConverter = svm_cvt.svm_converter()
         return lConverter.convert_classifier(clf)
-    if(clf.__class__ == sklearn.svm._classes.SVR):
+    if(clf.__class__ in [sklearn.svm._classes.SVR, sklearn.svm._classes.NuSVR]):
         lConverter = svm_cvt.svm_converter()
         return lConverter.convert_regressor(clf)
     if(clf.__class__ == sklearn.linear_model._ridge.RidgeClassifier):

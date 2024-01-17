@@ -26,7 +26,7 @@ class mlp_converter(conv.json_converter):
         lLayers = {}
         lLayers["sizes"] = lSizes
         lLayers["Layer_0"] = { "name" : "Input_Layer", "NbInputs" : 0, "NbOutputs" : lSizes[0], "intercepts" : [ ] }
-        P = int(np.log(NL) / np.log(10) + 1)
+        P = int(np.log(NL) / np.log(10))
         for layer in range(1, NL + 1):
             layer_info = {}
             layer_str = ('0'*P + str(layer))[-P:]
@@ -36,7 +36,7 @@ class mlp_converter(conv.json_converter):
             lCoefs = lDict1['coefs_'][layer - 1]
             layer_info["NbInputs"] = lCoefs.shape[0]
             layer_info["NbOutputs"] = lCoefs.shape[1]
-            P1 = int(np.log(lCoefs.shape[0]) / np.log(10) + 1)
+            P1 = int(np.log(lCoefs.shape[0]) / np.log(10))
             for idx in range(lCoefs.shape[0]):
                 idx_str = ('0'*P1 + str(idx))[-P1:]
                 layer_info["coeffs_" + idx_str] = list(lCoefs[idx])

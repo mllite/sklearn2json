@@ -12,9 +12,9 @@ class svm_converter(conv.json_converter):
         lDict = {}
         lDict1 = clf.__dict__
         print(lDict1.keys())
-        lOptions = ['kernel', 'degree', 'gamma', 'coef0', 'cache_size', 'epsilon', 'C']
+        lOptions = ['C', 'cache_size', 'coef0', 'degree', 'epsilon', 'gamma', 'kernel', 'nu', 'probability', 'shrinking', 'svm_type', 'tol']
         for opt in lOptions:
-            lDict[opt] = lDict1[opt]
+            lDict[opt] = lDict1.get(opt)
         lDict['gamma'] = lDict1['_gamma']
         return lDict
 
@@ -64,9 +64,9 @@ class svm_converter(conv.json_converter):
 
     def convert_model(self, clf):
         print("CONVERT_SVM_MODEL ", clf.__class__)
-        if(clf.__class__ == sklearn.svm._classes.SVC):
+        if(clf.__class__ in [sklearn.svm._classes.SVC, sklearn.svm._classes.NuSVC]):
             return self.convert_classifier(clf)
-        if(clf.__class__ == sklearn.svm._classes.SVR):
+        if(clf.__class__ in [sklearn.svm._classes.SVR, sklearn.svm._classes.NuSVR]):
             return self.convert_regressor(clf)
         return None
     

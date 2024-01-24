@@ -12,7 +12,7 @@ class svm_converter(conv.json_converter):
         lDict = {}
         lDict1 = clf.__dict__
         print(lDict1.keys())
-        lOptions = ['C', 'cache_size', 'coef0', 'degree', 'epsilon', 'gamma', 'kernel', 'nu', 'probability', 'shrinking', 'svm_type', 'tol']
+        lOptions = ['C', 'cache_size', 'coef0', 'degree', 'epsilon', 'gamma', 'kernel', 'nu', 'probability', 'shrinking', 'svm_type', 'tol', 'max_iter', 'random_state']
         for opt in lOptions:
             lDict[opt] = lDict1.get(opt)
         lDict['gamma'] = lDict1['_gamma']

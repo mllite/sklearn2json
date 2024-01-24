@@ -13,7 +13,7 @@ class random_forest_converter(conv.json_converter):
         lDict1 = clf.__dict__
         lOptions = ['n_estimators', 'ccp_alpha', 'criterion', 'max_depth', 'max_features',
                     'max_leaf_nodes', 'min_impurity_decrease', 'min_samples_leaf', 'min_samples_split',
-                    'min_weight_fraction_leaf', 'random_state']
+                    'min_weight_fraction_leaf', 'random_state', 'n_jobs', 'max_samples', 'class_weight']
         for opt in lOptions:
             lDict[opt] = lDict1[opt]
         return lDict
@@ -23,7 +23,7 @@ class random_forest_converter(conv.json_converter):
         lDict1 = clf.__dict__
         lOptions = ['ccp_alpha', 'criterion', 'max_depth', 'max_features',
                     'max_leaf_nodes', 'min_impurity_decrease', 'min_samples_leaf', 'min_samples_split',
-                    'min_weight_fraction_leaf', 'random_state']
+                    'min_weight_fraction_leaf', 'random_state', 'splitter']
         for opt in lOptions:
             lDict[opt] = lDict1[opt]
         return lDict
@@ -34,10 +34,17 @@ class random_forest_converter(conv.json_converter):
         tree = clf.tree_
         # print(clf.__dict__)
         lDict = {}
+        lDict1 = clf.__dict__
+        lDict["metadata"] = self.get_metadata(clf)
         lDict["options"] = self.get_sub_model_options_as_dict(clf)
-        lDict["max_depth"] = tree.max_depth
+        if(lDict1.get("classes_") is not None):
+            lDict["classes"] = list(lDict1["classes_"])
+        lTreeDict = {}
         node_count = len(tree.n_node_samples)
-        lDict["node_count"] = node_count
+        lTreeDict["node_count"] = node_count
+        lTreeDict["max_depth"] = tree.max_depth
+        lTreeDict["features"] = lDict1['n_features_in_']
+        lTreeDict["outputs"] = lDict1['n_outputs_']
         nodes = {}
         P = int(np.log(node_count) / np.log(10) + 1)
         for node_id in range(len(tree.n_node_samples)):
@@ -61,7 +68,8 @@ class random_forest_converter(conv.json_converter):
                 "w_samples" : tree.weighted_n_node_samples[node_id],
                 "value" : list(normalized_value)
             }
-        lDict["nodes"] = nodes
+        lTreeDict["nodes"] = nodes
+        lDict["tree"] = lTreeDict
         return lDict
         
     def convert_classifier(self, clf):
@@ -70,7 +78,8 @@ class random_forest_converter(conv.json_converter):
         # print(lDict1)
         lDict["metadata"] = self.get_metadata(clf)
         lDict["options"] = self.get_model_options_as_dict(clf)
-        lDict["classes"] = list(lDict1["classes_"])
+        if(lDict1.get("classes_") is not None):
+            lDict["classes"] = list(lDict1["classes_"])
         lDict["forest"] = {}
         lDict["forest"]["Trees"] = clf.n_estimators
         P = int(np.log(clf.n_estimators) / np.log(10) + 1)
@@ -94,9 +103,9 @@ class random_forest_converter(conv.json_converter):
 
     
     def convert_model(self, clf):
-        if(clf.__class__ == sklearn.ensemble.RandomForestClassifier):
+        if(clf.__class__ == sklearn.ensemble._forest.RandomForestClassifier):
             return self.convert_classifier(clf)
-        if(clf.__class__ == sklearn.ensemble.RandomForestRegressor):
+        if(clf.__class__ == sklearn.ensemble._forest.RandomForestRegressor):
             return self.convert_regressor(clf)
         return None
     
